@@ -19,11 +19,29 @@ class SetGameModelView: ObservableObject {
     }
     
     var cardsOnTable: Array<Card> {
-        model.cardsOnTable
+        var cardsOnTable: Array<Card> = Array()
+        for card in model.cards {
+            if (card.isOnTheTable && !card.isMatched) {
+                cardsOnTable.append(card)
+            }
+        }
+        return cardsOnTable
     }
     
     func newGame() {
         self.model = SetGame()
+    }
+    
+    func choose(_ card: Card) {
+        self.model.choose(card)
+    }
+    
+    var score: Int {
+        model.score
+    }
+    
+    func deal() {
+        self.model.addCardsToTable(3)
     }
     
     

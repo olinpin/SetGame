@@ -13,11 +13,20 @@ struct SetGameView: View {
     var body: some View {
         VStack {
             AspectVGrid(items: game.cardsOnTable, aspectRatio: 2/3) { card in
-                CardView(card: card).foregroundColor(.red)
+                CardView(card: card).foregroundColor(.red).onTapGesture {
+                    game.choose(card)
+                }
             }
             Spacer()
             Spacer()
-            Button(action: {game.newGame()}, label: {Text("New game").font(.largeTitle)})
+            VStack {
+                Button(action: {game.deal()}, label: { Text("Deal 3 more cards").font(.largeTitle) })
+                HStack {
+                    Button(action: {game.newGame()}, label: {Text("New game").font(.largeTitle)}).padding()
+                    Spacer()
+                    Text("\(game.score)").font(.largeTitle).bold()
+                }
+            }
         }
     }
     
@@ -30,6 +39,7 @@ struct CardView: View {
     var color: Color
     var symbol: CardSymbol
     var shading: CardShading
+    var selectedGreen: Color = Color(hue: 0.355, saturation: 1.0, brightness: 1.0)
     
     init(card: SetGameModelView.Card) {
         self.card = card
@@ -44,11 +54,13 @@ struct CardView: View {
             ZStack {
                 let cardShape = RoundedRectangle(cornerRadius: 10)
                 cardShape.aspectRatio(2/3, contentMode: .fit)
-                cardShape.foregroundColor(.white)
+                if (card.isSelected) {
+                    cardShape.foregroundColor(selectedGreen)
+                } else {
+                    cardShape.foregroundColor(.white)
+                }
                 cardShape.strokeBorder(lineWidth: 5)
                 
-                if (shading == CardShading.open) {
-                }
                 VStack {
                     ForEach (0..<numberOfSymbols, id: \.self) { _ in
                         createShape().frame(height: geometry.size.height/4)
