@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SetGameView: View {
     
-    var game: SetGame
+    @ObservedObject var game: SetGameModelView
     var body: some View {
         VStack {
             AspectVGrid(items: game.cardsOnTable, aspectRatio: 2/3) { card in
@@ -17,7 +17,7 @@ struct SetGameView: View {
             }
             Spacer()
             Spacer()
-//            Button(action: {game.newGame()}, label: {Text("New game")})
+            Button(action: {game.newGame()}, label: {Text("New game").font(.largeTitle)})
         }
     }
     
@@ -25,13 +25,13 @@ struct SetGameView: View {
 
 
 struct CardView: View {
-    var card: SetGame.Card
+    var card: SetGameModelView.Card
     var numberOfSymbols: Int
     var color: Color
     var symbol: CardSymbol
     var shading: CardShading
     
-    init(card: SetGame.Card) {
+    init(card: SetGameModelView.Card) {
         self.card = card
         self.numberOfSymbols = card.numberOnCard
         self.color = card.color
@@ -96,7 +96,7 @@ struct CardView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        let game = SetGame()
+        let game = SetGameModelView()
         SetGameView(game: game)
             .preferredColorScheme(.dark)
         SetGameView(game: game)
