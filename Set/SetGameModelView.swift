@@ -19,13 +19,14 @@ class SetGameModelView: ObservableObject {
     }
     
     var cardsOnTable: Array<Card> {
-        var cardsOnTable: Array<Card> = Array()
-        for card in model.cards {
-            if (card.isOnTheTable && !card.isMatched) {
-                cardsOnTable.append(card)
-            }
-        }
-        return cardsOnTable
+//        var cardsOnTable: Array<Card> = Array()
+//        for card in model.cards {
+//            if (card.isOnTheTable && !card.isMatched) {
+//                cardsOnTable.append(card)
+//            }
+//        }
+//        return cardsOnTable
+        model.displayedCards
     }
     
     func newGame() {

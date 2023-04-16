@@ -32,6 +32,7 @@ struct SetGame {
                 let chosenCard1 = chosenCards[0]
                 let chosenCard2 = chosenCards[1]
                 let chosenCard3 = chosenCards[2]
+                let chosenCards = [chosenCard1, chosenCard2, chosenCard3]
                 
                 let color = all3EqualOrAllDifferent(chosenCard1.color, chosenCard2.color, chosenCard3.color)
                 let shading = all3EqualOrAllDifferent(chosenCard1.shading, chosenCard2.shading, chosenCard3.shading)
@@ -40,21 +41,19 @@ struct SetGame {
                 
                 
                 if color && shading && symbol && numberOnCard {
-                    cards[cards.firstIndex(where: {chosenCard1.id == $0.id})!].isMatched = true
-                    cards[cards.firstIndex(where: {chosenCard2.id == $0.id})!].isMatched = true
-                    cards[cards.firstIndex(where: {chosenCard3.id == $0.id})!].isMatched = true
+                    for chosenCard in chosenCards {
+                        cards[cards.firstIndex(where: {chosenCard.id == $0.id})!].isMatched = true
+                    }
                     score += 1
-                    if (cardsOnTheTable() < 12) {
-                        addCardsToTable(3)
+                    if (cardsOnTheTable < GameConstants.cardsOnTableInTheBeggining) {
+                        addCardsToTable(GameConstants.numberOfCardsToDraw)
                     }
                 } else {
                     score -= 1
                 }
-                cards[cards.firstIndex(where: {chosenCard1.id == $0.id})!].isSelected = false
-                cards[cards.firstIndex(where: {chosenCard2.id == $0.id})!].isSelected = false
-                cards[cards.firstIndex(where: {chosenCard3.id == $0.id})!].isSelected = false
-                
-                
+                for chosenCard in chosenCards {
+                    cards[cards.firstIndex(where: {chosenCard.id == $0.id})!].isSelected = false
+                }
             }
         }
     }
@@ -64,38 +63,39 @@ struct SetGame {
     }
     
     mutating func addCardsToTable(_ numberOfCards: Int) {
-        print(cards.count, cardsOnTheTable())
-        let maxCards = cardsOnTheTable() + 3
         var i = 0
-        while cardsOnTheTable() < maxCards && i < 81 {
+        var cardsAdded = 0
+        while cardsAdded < numberOfCards && i < cards.count {
             let card = cards[i]
             if (!card.isOnTheTable && !card.isMatched) {
-                cards[card.id].isOnTheTable = true
+                let cardIndexToBeModified = cards.firstIndex(where: {$0.id == card.id})
+                if (cardIndexToBeModified != nil) {
+                    cards[cardIndexToBeModified!].isOnTheTable = true
+                    cardsAdded += 1
+                }
+
             }
             i += 1
         }
     }
     
-    func cardsOnTheTable() -> Int {
-        var cardsOnTable = 0
-        for card in cards {
-            if (card.isOnTheTable && !card.isMatched) {
-                cardsOnTable += 1
-            }
+    var displayedCards: Array<Card> {
+        cards.filter { card in
+            card.isOnTheTable && !card.isMatched
         }
-        return cardsOnTable
     }
     
-
+    var cardsOnTheTable: Int {
+        cards.filter({$0.isOnTheTable && !$0.isMatched}).count
+    }
     
     init() {
         var deck = SetGame.createCards()
         deck.shuffle()
-        for i in 0..<12 {
+        for i in 0..<GameConstants.cardsOnTableInTheBeggining {
             deck[i].isOnTheTable = true
         }
         self.cards = deck
-        print(cards.count)
     }
     
     private static func createCards() -> Array<SetGame.Card> {
@@ -104,7 +104,7 @@ struct SetGame {
         var id = 0
         for symbol in CardSymbol.allCases {
             for shading in CardShading.allCases {
-                for number in 1..<4 {
+                for number in 1..<GameConstants.numberOfDifferences {
                     for symbolColor in colors.indices {
                         let newCard = SetGame.Card(id: id, shading: shading, symbol: symbol, color: colors[symbolColor], numberOnCard: number)
                         deck.append(newCard)
@@ -115,12 +115,6 @@ struct SetGame {
         }
         return deck
     }
-
-
-
-    
-    
-    
     
     
     struct Card: Identifiable, Equatable {
@@ -132,6 +126,13 @@ struct SetGame {
         var isSelected: Bool = false
         var isOnTheTable: Bool = false
         var numberOnCard: Int
+    }
+    
+    private struct GameConstants {
+        static let numberOfDifferences = 4
+        static let cardsOnTableInTheBeggining = 12
+        static let numberOfCardsToDraw = 3
+        
     }
     
 }
