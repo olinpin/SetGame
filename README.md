@@ -1,3 +1,7 @@
+![Set Game app Icon](https://github.com/olinpin/SetGame/blob/main/resources/AppIcon.png?raw=true)
+
+
+
 ### Set Game
 This is an implementation of the Set card game in Swift using SwiftUI. The game is a matching game where players try to find sets of three cards that share the same properties (color, symbol, number, and shading) or differ in all of these properties. The game ends when there are no more sets on the table.
 ## Usage
