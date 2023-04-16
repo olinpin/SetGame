@@ -132,7 +132,6 @@ struct SetGame {
         static let numberOfDifferences = 4
         static let cardsOnTableInTheBeggining = 12
         static let numberOfCardsToDraw = 3
-        
     }
     
 }

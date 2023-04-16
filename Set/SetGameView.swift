@@ -12,11 +12,7 @@ struct SetGameView: View {
     @ObservedObject var game: SetGameModelView
     var body: some View {
         VStack {
-            AspectVGrid(items: game.cardsOnTable, aspectRatio: 2/3) { card in
-                CardView(card: card).foregroundColor(.red).onTapGesture {
-                    game.choose(card)
-                }
-            }
+            ScrollOrAspectVGrid()
             Spacer()
             Spacer()
             VStack {
@@ -25,6 +21,31 @@ struct SetGameView: View {
                     Button(action: {game.newGame()}, label: {Text("New game").font(.largeTitle)}).padding()
                     Spacer()
                     Text("\(game.score)").font(.largeTitle).bold()
+                }
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private func ScrollOrAspectVGrid() -> some View {
+        if (game.cardsOnTable.count <= 21) {
+                AspectVGrid(items: game.cardsOnTable, aspectRatio: 2/3) { card in
+                    CardView(card: card).foregroundColor(.red).onTapGesture {
+                        game.choose(card)
+                    }
+                }
+        }
+        else {
+            ScrollView {
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 70), spacing: 0)], spacing: 0) {
+                    ForEach(game.cardsOnTable) { card in
+                        CardView(card: card)
+                            .aspectRatio(2/3, contentMode: .fit)
+                            .foregroundColor(.red)
+                            .onTapGesture {
+                            game.choose(card)
+                        }
+                    }
                 }
             }
         }
