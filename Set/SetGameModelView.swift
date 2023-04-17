@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 
 class SetGameModelView: ObservableObject {
@@ -36,6 +37,10 @@ class SetGameModelView: ObservableObject {
     
     func deal() {
         self.model.addCardsToTable(3)
+    }
+    
+    var colors: [Int : Color] {
+        self.model.colors
     }
     
     

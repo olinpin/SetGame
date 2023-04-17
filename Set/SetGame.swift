@@ -11,6 +11,8 @@ import SwiftUI
 struct SetGame {
     private(set) var cards: Array<Card>
     private(set) var score: Int = 0
+    private(set) var colors : [Int : Color] = [:]
+    private var matches: Int = 0
     
     
     
@@ -43,8 +45,11 @@ struct SetGame {
                 if color && shading && symbol && numberOnCard {
                     for chosenCard in chosenCards {
                         cards[cards.firstIndex(where: {chosenCard.id == $0.id})!].isMatched = true
+                        cards[cards.firstIndex(where: {chosenCard.id == $0.id})!].matchId = matches
                     }
+                    colors.updateValue(randomColor(), forKey: self.matches)
                     score += 1
+                    matches += 1
                     if (cardsOnTheTable < GameConstants.cardsOnTableInTheBeggining) {
                         addCardsToTable(GameConstants.numberOfCardsToDraw)
                     }
@@ -54,7 +59,14 @@ struct SetGame {
                 for chosenCard in chosenCards {
                     cards[cards.firstIndex(where: {chosenCard.id == $0.id})!].isSelected = false
                 }
+                
             }
+        }
+        else if let chosenIndex = cards.firstIndex(where: {card.id == $0.id}),
+                !cards[chosenIndex].isMatched,
+                cards[chosenIndex].isSelected,
+                cards[chosenIndex].isOnTheTable {
+            cards[chosenIndex].isSelected = false
         }
     }
     
@@ -81,7 +93,10 @@ struct SetGame {
     
     var displayedCards: Array<Card> {
         cards.filter { card in
-            card.isOnTheTable && !card.isMatched
+            card.isOnTheTable
+//            && !card.isMatched
+        }.sorted {
+            $0.matchId < $1.matchId
         }
     }
     
@@ -116,6 +131,13 @@ struct SetGame {
         return deck
     }
     
+    private func randomColor() -> Color {
+        let red = Double.random(in: 0...1)
+        let blue = Double.random(in: 0...1)
+        let green = Double.random(in: 0...1)
+        return Color(red: red, green: green, blue: blue).opacity(0.5)
+    }
+    
     
     struct Card: Identifiable, Equatable {
         var id: Int
@@ -126,6 +148,7 @@ struct SetGame {
         var isSelected: Bool = false
         var isOnTheTable: Bool = false
         var numberOnCard: Int
+        var matchId: Int = -1
     }
     
     private struct GameConstants {

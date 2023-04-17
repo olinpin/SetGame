@@ -30,7 +30,7 @@ struct SetGameView: View {
     private func ScrollOrAspectVGrid() -> some View {
         if (game.cardsOnTable.count <= 21) {
                 AspectVGrid(items: game.cardsOnTable, aspectRatio: 2/3) { card in
-                    CardView(card: card).foregroundColor(.red).onTapGesture {
+                    CardView(card: card, colors: game.colors).foregroundColor(.red).onTapGesture {
                         game.choose(card)
                     }
                 }
@@ -39,7 +39,7 @@ struct SetGameView: View {
             ScrollView {
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 70), spacing: 0)], spacing: 0) {
                     ForEach(game.cardsOnTable) { card in
-                        CardView(card: card)
+                        CardView(card: card, colors: game.colors)
                             .aspectRatio(2/3, contentMode: .fit)
                             .foregroundColor(.red)
                             .onTapGesture {
@@ -50,11 +50,11 @@ struct SetGameView: View {
             }
         }
     }
-    
 }
 
 
 struct CardView: View {
+    var colors: [Int : Color]
     var card: SetGameModelView.Card
     var numberOfSymbols: Int
     var color: Color
@@ -62,12 +62,13 @@ struct CardView: View {
     var shading: CardShading
     var selectedGreen: Color = Color(hue: 0.355, saturation: 1.0, brightness: 1.0)
     
-    init(card: SetGameModelView.Card) {
+    init(card: SetGameModelView.Card, colors: [Int : Color]) {
         self.card = card
         self.numberOfSymbols = card.numberOnCard
         self.color = card.color
         self.symbol = card.symbol
         self.shading = card.shading
+        self.colors = colors;
     }
     
     var body: some View {
@@ -77,6 +78,8 @@ struct CardView: View {
                 cardShape.aspectRatio(2/3, contentMode: .fit)
                 if (card.isSelected) {
                     cardShape.foregroundColor(selectedGreen)
+                } else if (card.isMatched) {
+                    cardShape.foregroundColor(colors[card.matchId])
                 } else {
                     cardShape.foregroundColor(.white)
                 }
