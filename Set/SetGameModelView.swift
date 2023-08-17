@@ -20,7 +20,11 @@ class SetGameModelView: ObservableObject {
     }
     
     var cardsOnTable: Array<Card> {
-        model.displayedCards
+        model.displayedCards.filter(showCard)
+    }
+
+    private func showCard(card: SetGameModelView.Card) -> Bool {
+        !card.isMatched
     }
     
     func newGame() {

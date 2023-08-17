@@ -78,8 +78,6 @@ struct CardView: View {
                 cardShape.aspectRatio(2/3, contentMode: .fit)
                 if (card.isSelected) {
                     cardShape.foregroundColor(selectedGreen)
-                } else if (card.isMatched) {
-                    cardShape.foregroundColor(colors[card.matchId])
                 } else {
                     cardShape.foregroundColor(.white)
                 }
