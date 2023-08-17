@@ -87,7 +87,7 @@ struct CardView: View {
                 
                 VStack {
                     ForEach (0..<numberOfSymbols, id: \.self) { _ in
-                        createShape().frame(height: geometry.size.height/4)
+                        createShape(height: geometry.size.height / 4)
                     }
                 }
             }
@@ -95,14 +95,17 @@ struct CardView: View {
     }
     
     @ViewBuilder
-    private func createShape() -> some View {
+    private func createShape(height: CGFloat) -> some View {
         switch symbol {
         case .diamond:
             colorShape(Diamond())
+                .frame(height: height)
         case .squiggles:
             colorShape(Rectangle())
+                .frame(height: height)
         default:
             colorShape(RoundedRectangle(cornerRadius: 100))
+                .frame(height: height)
         }
     }
     
