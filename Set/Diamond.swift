@@ -29,3 +29,19 @@ struct Diamond: Shape {
     }
     
 }
+
+struct Diamond_Previews: PreviewProvider {
+    static var previews: some View {
+        GeometryReader {geometry in
+            VStack {
+                Diamond()
+                    .size(CGSize(width: geometry.size.width, height: geometry.size.height / 3))
+                Diamond()
+                    .size(CGSize(width: geometry.size.width, height: geometry.size.height / 3))
+                Diamond()
+                    .size(CGSize(width: geometry.size.width, height: geometry.size.height / 3))
+            }
+        }
+        .padding()
+    }
+}
